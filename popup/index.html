@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chatbot</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
+    <script src="js/FileSaver.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.31.1/handsontable.full.min.js"></script>
+
+    <script src="js/xlsx.full.min.js"></script>
+    <script src="popup.js"></script>
+    <script src="google.js"></script>
+</head>
+
+<body>
+  <h1>Chatbot</h1>
+  <div id="chatbox"></div>
+
+  <div id="textbox">
+    <input type="text" id="userInput" placeholder="Type your message..." />
+    <button id="sendButton">Send</button>
+  </div>
+  <br>
+  <div id="textbox">
+    <input type="text" id="urlInput" placeholder="Paste your url..." />
+    <button id="sendurlButton">Send</button>
+  </div>
+  <script src="popup_taide.js"></script>
+</body>
+
+</html>

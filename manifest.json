@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "PDF Link Extractor",
+  "version": "1.0",
+  "description": "Extracts PDF links from the current webpage.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup/index.html"
+  }
+}
