@@ -151,7 +151,7 @@ def get_embedding(text):
 
 
 import google.generativeai as genai
-genai.configure(api_key=os.getenv("Gemini_API_KEY"))
+genai.configure(api_key="AIzaSyAYKq_FX2Ll5_SKIYbzSrXcWZJt_DKpEI4")
 gemini_model = genai.GenerativeModel("gemini-2.5-flash")
 
 def Geminichat(sInput):
