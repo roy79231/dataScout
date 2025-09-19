@@ -1,15 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from sentence_transformers import SentenceTransformer
 import pdfplumber
 import os
-from sqlalchemy import create_engine, Column, Integer, String, Text,inspect
+from sqlalchemy import create_engine, Column, Integer,Text ,inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import torch
 from sentence_transformers import SentenceTransformer, util
-import warnings
 import pandas as pd
 import numpy as np
 
@@ -25,7 +23,7 @@ def test():
 def process_pdf():
     user_input = request.form.get('user_input')  # 獲取使用者輸入
     try:
-        response =TAIDEchat(user_input)
+        response =Geminichat(user_input)
         return jsonify({'response': response})
     
     except Exception as e:
@@ -36,7 +34,7 @@ def process_pdf():
 @app.route('/enter_url', methods=['POST'])
 def enter_url():
     # 取得 download 資料夾中的所有文件
-    download_dir = r"C:\Users\user\Desktop\專題\use_flask\download"
+    download_dir = r"C:\Users\user\Desktop\pdf_chatbot\download"
     files = os.listdir(download_dir)
 
     for file_name in files:
@@ -152,46 +150,40 @@ def get_embedding(text):
     return embedding
 
 
-# 调用 TAIDE 模型生成响应
-def TAIDEchat(sInput):
+import google.generativeai as genai
 
-    generation_args = {
-        "max_new_tokens": 1000,
-        "return_full_text": False,
-        "temperature": 0.3,
-        "do_sample": True,
-    }
-        
-    # 將用戶輸入轉換為嵌入向量
+# 初始化 Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+gemini_model = genai.GenerativeModel("gemini-2.5-flash")
+
+def Geminichat(sInput):
+    # 1. 將用戶輸入轉換為嵌入向量
     query_embedding = get_embedding(sInput)
 
-    # 檢索最相似的內容
+    # 2. 檢索最相似的內容
     context = retrieve_context(query_embedding)
     context_text = "\n".join(context)
-        
-    # 將檢索到的內容添加為系統訊息    
-    messages = [{"role": "system", "content": context_text}, {"role": "user", "content": sInput}]
-        
-    # 生成模型回應
-    output = pipe(messages, **generation_args)
-    model_response = output[0]['generated_text']
+
+    print("收到資料")
+
+    # 3. 組合 prompt
+    prompt = f"""你是一個知識問答助手。請根據以下檢索到的內容回答問題。
+檢索內容：
+{context_text}
+
+使用者問題：
+{sInput}
+"""
+
+    # 4. 呼叫 Gemini 生成
+    response = gemini_model.generate_content(prompt)
+
+    model_response = response.text
+    print("模型回應:", model_response)
 
     return model_response
 
-warnings.filterwarnings("ignore")
-# 設定 Hugging Face API 令牌
-os.environ["HUGGINGFACE_HUB_TOKEN"] = "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"  # 用你的 Hugging Face API 令牌替換這個值
 
-# 或者直接在代碼中使用 login 函數
-from huggingface_hub import login
-login("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")
-
-# 初始化 LLM 模型
-device = 0 if torch.cuda.is_available() else -1  # 0 代表 GPU，-1 代表 CPU
-model = AutoModelForCausalLM.from_pretrained("taide/TAIDE-LX-7B-Chat", load_in_4bit=True)
-tokenizer = AutoTokenizer.from_pretrained("taide/TAIDE-LX-7B-Chat", use_fast=False)
-# 創建生成管道，並設置設備
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 if __name__ == '__main__':
     app.run(port=5000)

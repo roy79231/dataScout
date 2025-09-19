@@ -1,11 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "PDF Link Extractor",
+  "name": "DataScoutGemini",
   "version": "1.0",
-  "description": "Extracts PDF links from the current webpage.",
+  "description": "A pdf AI reader",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "tabs",
+    "webRequest"
   ],
+  "icons": {
+    "16": "icons/favicon.png",
+    "32": "icons/favicon.png",
+    "48": "icons/favicon.png",
+    "128": "icons/logo.png"
+  },
   "action": {
     "default_popup": "popup/index.html"
   }
